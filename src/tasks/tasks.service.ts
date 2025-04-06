@@ -2,10 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task, TaskDocument } from './task.schema';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { CreateTaskDto } from './dto/create-task';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
+  constructor(
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+    @InjectQueue('task-queue') private taskQueue: Queue,
+  ) {}
 
   async create(type: string) {
     const task = new this.taskModel({ type });
@@ -41,5 +47,19 @@ export class TasksService {
     const task = await this.taskModel.findById(id);
     if (!task) throw new NotFoundException('Task not found');
     return task;
+  }
+
+  async createSync(createTaskDto: CreateTaskDto): Promise<Task> {
+    const newTask = await this.taskModel.create({
+      ...createTaskDto,
+      status: 'pending',
+    });
+
+    // Add job to the queue
+    await this.taskQueue.add('process-task', {
+      taskId: newTask._id,
+    });
+
+    return newTask;
   }
 }
