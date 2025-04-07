@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task } from './task.schema';
 
-@Processor('task-queue')
+@Processor('task-queue') //consumer
 export class TasksProcessor {
   constructor(@InjectModel('Task') private taskModel: Model<Task>) {}
 

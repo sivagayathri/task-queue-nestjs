@@ -55,7 +55,7 @@ export class TasksService {
       status: 'pending',
     });
 
-    // Add job to the queue
+    // Add job to the queue-producer
     await this.taskQueue.add('process-task', {
       taskId: newTask._id,
     });
