@@ -1,0 +1,83 @@
+Rate-Limited Task Queue System Documentation
+
+
+Project Overview
+------------------
+This project implements a rate-limited background task queue using NestJS, MongoDB, Redis, and Bull. It allows users to submit tasks, which are stored in MongoDB and processed in the background by a worker with retry and rate-limiting mechanisms.
+
+
+🧱 Tech Stack
+----------------
+NestJS: Backend framework
+MongoDB (Atlas): Task data storage
+Redis: Job queue broker
+Bull: Task queue manager
+Mongoose: MongoDB ODM
+
+
+Features
+----------------
+Submit background tasks via API
+Store task metadata in MongoDB
+Queue task processing with rate-limiting
+Retry failed tasks up to 3 times
+Update task status (pending, processing, completed, failed)
+Monitor task status via API
+
+
+
+Getting Started (Local Setup)
+---------------
+Prerequisites:
+
+Node.js >= 18
+Redis installed and running
+MongoDB Atlas cluster
+
+Run the app:
+npm run start:dev
+
+
+API Endpoints:
+
+Create a Task
+--------------
+POST /tasks
+Content-Type: application/json
+{
+  "type": "email"
+}
+
+
+Get Task by ID
+-------------
+GET /tasks/:id
+
+
+Get Task Status Count
+-------------
+GET /tasks/status
+
+
+Background Worker
+-------------------
+The worker is defined using @Processor('task-queue') and listens for process-task jobs.
+
+Worker Behavior:
+Processes one task at a time (rate-controlled)
+Marks task as processing, then completed
+Retries failed tasks up to 3 times
+Final failure results in failed status
+
+example :you can see logs in terminal:
+[TasksProcessor] Processing task: 661...
+[TasksProcessor] Task completed: 661...
+
+
+Testing Tips:
+-------------
+Use Postman or curl to create and view tasks
+Watch worker logs for processing output
+Check MongoDB task collection for status updates
+
+
