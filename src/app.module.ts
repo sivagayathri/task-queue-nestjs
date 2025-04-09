@@ -20,6 +20,7 @@ import { BullModule } from '@nestjs/bull';
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
     TasksModule,
   ],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
