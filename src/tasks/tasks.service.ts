@@ -16,7 +16,10 @@ export class TasksService {
   async create(type: string) {
     const task = new this.taskModel({ type });
     await task.save();
-    return { message: 'Task created successfully', id: task._id };
+
+    await this.taskQueue.add('process-task', { taskId: task._id });
+
+    return { message: 'Task created and queued', id: task._id };
   }
 
   async getStatusCount() {
