@@ -80,4 +80,6 @@ Use Postman or curl to create and view tasks
 Watch worker logs for processing output
 Check MongoDB task collection for status updates
 
+CI/CD workflow added
+
 
